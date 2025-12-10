@@ -19,7 +19,7 @@ bld/
 [Ll]og/
 
 ## Visual Studio cache/options directory
-.vs/SolarSystem/
+.vs/SolarSystem
 
 ## MSTest test results
 [Tt]est[Rr]esult*/
@@ -49,7 +49,7 @@ bld/
 *.pidb
 *.svclog
 *.scc
-*.vs/SolarSystem/
+*.vs/SolarSystem
 ## Visual Studio profiler
 *.psess
 *.vsp
