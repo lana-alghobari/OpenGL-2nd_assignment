@@ -1,0 +1,10 @@
+^C:\USERS\LOQ\DESKTOP\UNI\OPENGL BOOK\GLFW-3.4\BUILD\CMAKEFILES\08787413E30DF90E4552497E856F67A2\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" "-SC:/Users/LOQ/Desktop/uni/openGL book/glfw-3.4" "-BC:/Users/LOQ/Desktop/uni/openGL book/glfw-3.4/build" --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file "C:/Users/LOQ/Desktop/uni/openGL book/glfw-3.4/build/GLFW.sln"
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

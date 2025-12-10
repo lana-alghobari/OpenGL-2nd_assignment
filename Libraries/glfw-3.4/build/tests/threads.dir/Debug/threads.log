@@ -1,0 +1,5 @@
+﻿  Building Custom Rule C:/Users/LOQ/Desktop/uni/openGL book/glfw-3.4/tests/CMakeLists.txt
+  threads.c
+  tinycthread.c
+  Generating Code...
+  threads.vcxproj -> C:\Users\LOQ\Desktop\uni\openGL book\glfw-3.4\build\tests\Debug\threads.exe
