@@ -1,79 +1,98 @@
-## Ignore Visual Studio user-specific files
+###############################
+# Visual Studio (C++ / OpenGL)
+###############################
+
+# User-specific files
+*.rsuser
 *.suo
 *.user
 *.userosscache
 *.sln.docstates
 
-## Build results
+# Visual Studio cache (these contain the huge ipch files)
+.vs/
+*.VC.db
+*.VC.VC.opendb
+*.ipch
+
+###############################
+# BUILD DIRECTORIES
+###############################
+[Bb]in/
+[Oo]bj/
+[Ll]og/
 [Dd]ebug/
 [Dd]ebugPublic/
 [Rr]elease/
 [Rr]eleases/
 x64/
 x86/
-[Aa][Rr][Mm]/
-[Aa][Rr][Mm]64/
-bld/
-[Bb]in/
-[Oo]bj/
-[Ll]og/
+ARM/
+ARM64/
+Intermediate/
 
-## Visual Studio cache/options directory
-.vs/SolarSystem
-
-## MSTest test results
-[Tt]est[Rr]esult*/
-[Bb]uild[Ll]og.*
-
-## Files built by Visual Studio
-*_i.c
-*_p.c
-*_h.h
+###############################
+# BINARY OUTPUT (ignore)
+###############################
 *.ilk
-*.meta
-*.pch
 *.pdb
-*.pgc
-*.pgd
-*.rsp
-*.sbr
-*.tlb
-*.tli
-*.tlh
+*.exe
+*.dll
+*.so
+*.exp
+
+###############################
+# COMPILER INTERMEDIATE FILES
+###############################
+*.iobj
+*.idb
+*.ipdb
+*.tlog
+*.pch
+*.pchi
+*.o
+*.obj  # <-- EXCEPT model assets (handled below)
 *.tmp
-*.tmp_proj
 *.log
-*.vspscc
-*.vssscc
-.builds
+
+###############################
+# CMAKE GENERATED FILES
+###############################
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+
+###############################
+# KEEP YOUR ASSETS (IMPORTANT)
+###############################
+
+# ALLOW 3D model files
+!*.obj   # keep Wavefront OBJ models
+!*.mtl
+!*.fbx
+!*.gltf
+!*.glb
+
+# Allow libs you need for OpenGL
+!*.lib
+!*.a
+!*.dll  # unless you want to ignore them—usually keep for external libraries
+
+###############################
+# OTHER OPTIONAL IGNORES
+###############################
+*.cachefile
+*.opensdf
+*.sdf
+*.dbmdl
 *.pidb
-*.svclog
-*.scc
-*.vs/SolarSystem
-## Visual Studio profiler
 *.psess
 *.vsp
-*.vspx
-*.sap
+*.vspscc
 
-## NuGet
-*.nupkg
-# NuGet restore directories
-packages/
-*.snupkg
+# macOS
+.DS_Store
 
-## Azure build results
-csx/
-*.build.csdef
-
-## Entity Framework
-*.mdf
-*.ldf
-
-## Python tools for Visual Studio
-__pycache__/
-*.pyc
-
-## Other
-*.db
-*.opendb
+# Python notebook autosave
+.ipynb_checkpoints/
