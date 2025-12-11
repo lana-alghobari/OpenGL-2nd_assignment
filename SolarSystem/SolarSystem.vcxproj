@@ -79,11 +79,11 @@
     <LibraryPath>C:\Users\LOQ\Desktop\uni\openGL book\glfw-3.4\build\src\Debug;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>C:\Users\LOQ\Desktop\uni\opengl\SolarSystem\Libraries\assimp;C:\Users\LOQ\Desktop\uni\opengl\SolarSystem\Libraries\glew-2.2.0\include;C:\Users\LOQ\Desktop\uni\opengl\SolarSystem\Libraries\glew-2.2.0;C:\Users\LOQ\Desktop\uni\opengl\SolarSystem\Libraries\glm;C:\Users\LOQ\Desktop\uni\opengl\SolarSystem\Libraries\glfw-3.4\include\GLFW;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\LOQ\Desktop\uni\opengl\SolarSystem2\Libraries\glad;C:\Users\LOQ\Desktop\uni\opengl\SolarSystem2\Libraries;C:\Users\LOQ\Desktop\uni\opengl\SolarSystem2\Libraries\glew/include;C:\Users\LOQ\Desktop\uni\opengl\SolarSystem2\Libraries\glm;C:\Users\LOQ\Desktop\uni\opengl\SolarSystem2\Libraries\glfw-3.4\include\GLFW;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Users\LOQ\Desktop\uni\opengl\SolarSystem\Libraries\glfw-3.4\build\src\Debug;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>C:\Users\LOQ\Desktop\uni\opengl\SolarSystem\Libraries\assimp;C:\Users\LOQ\Desktop\uni\opengl\SolarSystem\Libraries\glew-2.2.0\include;C:\Users\LOQ\Desktop\uni\opengl\SolarSystem\Libraries\glew-2.2.0;C:\Users\LOQ\Desktop\uni\opengl\SolarSystem\Libraries\glm;C:\Users\LOQ\Desktop\uni\opengl\SolarSystem\Libraries\glfw-3.4\include\GLFW;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\LOQ\Desktop\uni\opengl\SolarSystem2\Libraries\glad;C:\Users\LOQ\Desktop\uni\opengl\SolarSystem2\Libraries;C:\Users\LOQ\Desktop\uni\opengl\SolarSystem2\Libraries\glew/include;C:\Users\LOQ\Desktop\uni\opengl\SolarSystem2\Libraries\glm;C:\Users\LOQ\Desktop\uni\opengl\SolarSystem2\Libraries\glfw-3.4\include\GLFW;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Users\LOQ\Desktop\uni\opengl\SolarSystem\Libraries\glfw-3.4\build\src\Debug;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -146,7 +146,9 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="camera.h" />
     <ClInclude Include="Cube.h" />
+    <ClInclude Include="model.h" />
     <ClInclude Include="Polygon.h" />
     <ClInclude Include="model.fs" />
   </ItemGroup>

@@ -1,0 +1,4 @@
+﻿  main.cpp
+C:\Users\LOQ\Desktop\uni\opengl\SolarSystem2\Libraries\glew\include\GL\glew.h(85,1): error C1189: #error:  gl.h included before glew.h
+  (compiling source file 'main.cpp')
+  

@@ -1,8 +1,7 @@
-
 #pragma once
 #include "Polygon.h"
 #include <array>
-#include "Shader.h"
+#include "additional/Shader.h"
 #include "glm.hpp"
 #include "gtc/matrix_transform.hpp"
 
