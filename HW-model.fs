@@ -52,6 +52,10 @@ uniform vec3 objectColor;
 uniform sampler2D textureSample;
 uniform Material material;
 uniform PointLight pointLights[NR_POINT_LIGHTS];
+uniform vec3 sunPos;
+uniform vec3 earthPos;
+uniform vec3 moonPos;
+uniform float moonRadius;
 
 uniform bool isEmissive;
 uniform vec3 emissiveColor;
@@ -74,9 +78,33 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir, v
 
     return (ambient + diffuse + specular) * attenuation;
 }
+float simpleShadow(vec3 fragPos, vec3 lightPos, vec3 occluderPos, float occluderRadius)
+{
+    vec3 L = lightPos - fragPos;
+    vec3 Ldir = normalize(L);
+    float Ldist = length(L);
 
+    vec3 O = occluderPos - fragPos;
+
+    float t = dot(O, Ldir);
+
+    if(t <= 0.0 || t >= Ldist)
+        return 0.0;
+
+    vec3 closestPoint = fragPos + Ldir * t;
+
+    float d = length(occluderPos - closestPoint);
+
+    if(d > occluderRadius)
+        return 0.0;
+
+
+    float softness = 1.0 - smoothstep(0.0, occluderRadius, d);
+    return softness;
+}
 void main()
 {
+
     vec3 norm = normalize(Normal);
     vec3 viewDir = normalize(viewPos - FragPos);
 
@@ -84,12 +112,26 @@ void main()
     vec3 baseColor = texColor * objectColor;
 
     vec3 result = vec3(0.0);
+        float shadow = 0.0;
+    
+    if(!isEmissive) {
 
-    for(int i=0; i<NR_POINT_LIGHTS; i++)
-        result += CalcPointLight(pointLights[i], norm, FragPos, viewDir, baseColor);
+float shadowEarth = simpleShadow(FragPos, sunPos, earthPos, 0.3);
+float shadowMoon  = simpleShadow(FragPos, sunPos, moonPos, moonRadius);
 
-    if(isEmissive)
-        result += emissiveColor;
-
+shadow = max(shadowEarth, shadowMoon);  
+    }
+    
+    if(!isEmissive) {
+        for(int i=0; i<NR_POINT_LIGHTS; i++) {
+            vec3 lit = CalcPointLight(pointLights[i], norm, FragPos, viewDir, baseColor);
+            vec3 shadowed = pointLights[i].ambient * baseColor;
+            result = mix(lit, shadowed, shadow);
+        }
+    }
+if(isEmissive)
+{
+    result = texColor + emissiveColor;
+}
     FragColor = vec4(result, 1.0);
 }

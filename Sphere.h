@@ -38,8 +38,8 @@ private:
                 vertices.push_back(n.z);
 
                 // tex coords
-                vertices.push_back((float)j/sectorCount);
-                vertices.push_back((float)i/stackCount);
+                vertices.push_back(1.0f - (float)j / sectorCount);
+                vertices.push_back((float)i / stackCount);
             }
         }
 
@@ -94,7 +94,17 @@ public:
             stbi_set_flip_vertically_on_load(true);
             unsigned char *data = stbi_load(texPath, &width, &height, &nrChannels, 0);
             if(data){
-                GLenum format = nrChannels == 3 ? GL_RGB : GL_RGBA;
+                //GLenum format = nrChannels == 3 ? GL_RGB : GL_RGBA;
+                GLenum format;
+                if (nrChannels == 1) format = GL_RED;
+                else if (nrChannels == 3) format = GL_RGB;
+                else if (nrChannels == 4) format = GL_RGBA;
+                else {
+                    std::cout << "Unsupported nrChannels: " << nrChannels << std::endl;
+                    stbi_image_free(data);
+                    textureID = 0;
+                    return;
+                }
                 glTexImage2D(GL_TEXTURE_2D,0,format,width,height,0,format,GL_UNSIGNED_BYTE,data);
                 glGenerateMipmap(GL_TEXTURE_2D);
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -114,7 +124,8 @@ public:
         if(textureID){
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, textureID);
-            shader.setUniform1i("material.texture_diffuse1", 0);
+            shader.setUniform1i("textureSample", 0);
+            //shader.setUniform1i("material.texture_diffuse1", 0);
         }
         glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0);

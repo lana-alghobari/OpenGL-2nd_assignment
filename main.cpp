@@ -1,4 +1,4 @@
-#define STB_IMAGE_IMPLEMENTATION
+//#define STB_IMAGE_IMPLEMENTATION
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -6,6 +6,7 @@
 #include <glm.hpp>
 #include <gtc/matrix_transform.hpp>
 #include <gtc/type_ptr.hpp>
+#include "stb_image.h"
 
 #include "Shader.h"
 #include "Sphere.h"
@@ -18,6 +19,7 @@ float lastX = 400, lastY = 300;
 bool firstMouse = true;
 float fov = 45.0f;
 float deltaTime = 0.0f, lastFrame = 0.0f;
+
 
 void processInput(GLFWwindow *window);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
@@ -43,9 +45,13 @@ int main() {
 
     Shader lightingShader("../HW-model.fs"); 
 
-    Sphere sunSphere(0.5f, 36, 18);
-    Sphere smallSphere(0.3f, 36, 18);
+    Sphere sun(0.5f, 36, 18 ,"../textures/Sun.jpg");
+    Sphere earth(0.3f, 36, 18, "../textures/Earth.jpg");
+    Sphere moon(0.15, 36, 18, "../textures/Moon.jpg");
 
+    //Sphere sun(0.5f, 36, 18);
+    //Sphere earth(0.3f, 36, 18);
+    //Sphere moon(0.15, 36, 18);
     glm::vec3 sunPos = glm::vec3(-1.0f, 0.0f, 0.0f);
 
     glDisable(GL_CULL_FACE);
@@ -72,35 +78,61 @@ int main() {
                                      sunPos,
                                      1.0f, 0.022f, 0.0019f,
                                      {0.2f,0.2f,0.2f},
-                                     {1.0f,1.0f,0.0f},
-                                     {1.0f,1.0f,0.0f});
-        lightingShader.setUniform1f("material.shininess", 32.0f);
+                                     { 1.0f, 0.8f, 0.5f },
+                                     { 1.0f, 0.8f, 0.5f });
+        lightingShader.setUniform1f("material.shininess", 50.0f);
 
         glm::mat4 modelSun = glm::translate(glm::mat4(1.0f), sunPos);
         modelSun = glm::scale(modelSun, glm::vec3(0.5f));
         lightingShader.setUniformMat4f("model", modelSun);
         lightingShader.setUniform1i("isEmissive", true);
-        lightingShader.setUniformVec3f("emissiveColor", glm::vec3(1.0f,1.0f,0.0f));
-        sunSphere.Draw(lightingShader);
+        lightingShader.setUniformVec3f("emissiveColor", glm::vec3(1.0f, 0.2f, 0.0f));
+        sun.Draw(lightingShader);
 
-        float orbitRadius = 1.5f;
-        float orbitSpeed = 1.0f;
-        glm::vec3 smallPos = sunPos + glm::vec3(
-                orbitRadius * cos(currentFrame * orbitSpeed),
+        float earthOrbitRadius = 3.0f;
+        float earthOrbitSpeed = 0.1f;
+        glm::vec3 earthPos = sunPos + glm::vec3(
+                earthOrbitRadius * cos(currentFrame * earthOrbitSpeed),
                 0.0f,
-                orbitRadius * sin(currentFrame * orbitSpeed)
+                earthOrbitRadius * sin(currentFrame * earthOrbitSpeed)
+        );
+        
+        float moonOrbitRadius = 0.5f;
+        float moonOrbitSpeed = 0.5f;
+        glm::vec3 moonPos = earthPos + glm::vec3(
+            moonOrbitRadius * cos(currentFrame * moonOrbitSpeed),
+            0.0f,
+            moonOrbitRadius * sin(currentFrame * moonOrbitSpeed)
         );
 
-        glm::mat4 modelSmall = glm::translate(glm::mat4(1.0f), smallPos);
-        float selfRotateSpeed = 2.0f;
-        modelSmall = glm::rotate(modelSmall, currentFrame * selfRotateSpeed, glm::vec3(0.0f, 1.0f, 0.0f));
-        modelSmall = glm::scale(modelSmall, glm::vec3(0.3f));
+        glm::mat4 earthModel = glm::translate(glm::mat4(1.0f), earthPos);
+        float selfRotateSpeed = 0.5f;
+        earthModel = glm::rotate(earthModel, currentFrame * selfRotateSpeed, glm::vec3(0.0f, 1.0f, 0.0f));
+        earthModel = glm::scale(earthModel, glm::vec3(0.3f));
 
-        lightingShader.setUniformMat4f("model", modelSmall);
+
+        lightingShader.setUniformMat4f("model", earthModel);
         lightingShader.setUniform1i("isEmissive", false);
-        lightingShader.setUniformVec3f("objectColor", glm::vec3(0.8f,0.0f,0.0f));
+        lightingShader.setUniformVec3f("objectColor", glm::vec3(0.2f, 0.4f, 0.8f));
+         lightingShader.setUniformVec3f("moonPos", moonPos);
+ lightingShader.setUniform1f("moonRadius", 0.15f);
 
-        smallSphere.Draw(lightingShader);
+
+        earth.Draw(lightingShader);
+
+
+        glm::mat4 moonModel = glm::translate(glm::mat4(1.0f), moonPos);
+        moonModel = glm::rotate(moonModel, currentFrame * selfRotateSpeed, glm::vec3(0.7f, 0.7f, 0.7f));
+        moonModel = glm::scale(moonModel, glm::vec3(0.15f));
+
+        lightingShader.setUniformMat4f("model", moonModel);
+        lightingShader.setUniform1i("isEmissive", false);
+        lightingShader.setUniformVec3f("objectColor", glm::vec3(0.7f, 0.7f, 0.7f));
+        lightingShader.setUniformVec3f("earthPos", earthPos);
+        lightingShader.setUniform1f("earthRadius", 0.3f);
+        lightingShader.setUniformVec3f("sunPos", sunPos);
+
+        moon.Draw(lightingShader);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
