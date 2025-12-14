@@ -7,6 +7,7 @@
 #include <gtc/matrix_transform.hpp>
 #include <gtc/type_ptr.hpp>
 #include "stb_image.h"
+#include <array>
 
 #include "Shader.h"
 #include "Sphere.h"
@@ -19,11 +20,23 @@ float lastX = 400, lastY = 300;
 bool firstMouse = true;
 float fov = 45.0f;
 float deltaTime = 0.0f, lastFrame = 0.0f;
+float moonOrbitSpeed = 0.5f;
+float earthOrbitSpeed = 0.01f;
+float currentMoonSpeed = moonOrbitSpeed; 
+float currentEarthSpeed = earthOrbitSpeed;
+glm::vec3 sunPos = glm::vec3(-1.0f, 0.0f, 0.0f);
+glm::vec3 earthPos;
+glm::vec3 moonPos;
+std::array<glm::vec3, 3> lastPos;
+float earthAngle = 0.0f;
+float moonAngle = 0.0f;
+bool moonInfront = false;   
 
 
 void processInput(GLFWwindow *window);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
+bool areAlignedOrSmth(glm::vec3 sunPos, glm::vec3 earthPos, glm::vec3 moonPos);
 
 int main() {
     if (!glfwInit()) return -1;
@@ -49,10 +62,6 @@ int main() {
     Sphere earth(0.3f, 36, 18, "../textures/Earth.jpg");
     Sphere moon(0.15, 36, 18, "../textures/Moon.jpg");
 
-    //Sphere sun(0.5f, 36, 18);
-    //Sphere earth(0.3f, 36, 18);
-    //Sphere moon(0.15, 36, 18);
-    glm::vec3 sunPos = glm::vec3(-1.0f, 0.0f, 0.0f);
 
     glDisable(GL_CULL_FACE);
 
@@ -88,21 +97,20 @@ int main() {
         lightingShader.setUniform1i("isEmissive", true);
         lightingShader.setUniformVec3f("emissiveColor", glm::vec3(1.0f, 0.2f, 0.0f));
         sun.Draw(lightingShader);
-
+        earthAngle += currentEarthSpeed * deltaTime;
+        moonAngle += currentMoonSpeed * deltaTime;
         float earthOrbitRadius = 3.0f;
-        float earthOrbitSpeed = 0.1f;
-        glm::vec3 earthPos = sunPos + glm::vec3(
-                earthOrbitRadius * cos(currentFrame * earthOrbitSpeed),
-                0.0f,
-                earthOrbitRadius * sin(currentFrame * earthOrbitSpeed)
-        );
-        
-        float moonOrbitRadius = 0.5f;
-        float moonOrbitSpeed = 0.5f;
-        glm::vec3 moonPos = earthPos + glm::vec3(
-            moonOrbitRadius * cos(currentFrame * moonOrbitSpeed),
+        earthPos = sunPos + glm::vec3(
+            earthOrbitRadius * cos(earthAngle),
             0.0f,
-            moonOrbitRadius * sin(currentFrame * moonOrbitSpeed)
+            earthOrbitRadius * sin(earthAngle)
+        );
+
+        float moonOrbitRadius = 0.5f;
+         moonPos = earthPos + glm::vec3(
+            moonOrbitRadius * cos(moonAngle),
+            0.0f,
+            moonOrbitRadius * sin(moonAngle)
         );
 
         glm::mat4 earthModel = glm::translate(glm::mat4(1.0f), earthPos);
@@ -115,7 +123,7 @@ int main() {
         lightingShader.setUniform1i("isEmissive", false);
         lightingShader.setUniformVec3f("objectColor", glm::vec3(0.2f, 0.4f, 0.8f));
          lightingShader.setUniformVec3f("moonPos", moonPos);
- lightingShader.setUniform1f("moonRadius", 0.15f);
+         lightingShader.setUniform1f("moonRadius", 0.15f);
 
 
         earth.Draw(lightingShader);
@@ -148,7 +156,49 @@ void processInput(GLFWwindow *window){
     if(glfwGetKey(window, GLFW_KEY_S)==GLFW_PRESS) camPos -= speed * camFront;
     if(glfwGetKey(window, GLFW_KEY_A)==GLFW_PRESS) camPos -= glm::normalize(glm::cross(camFront, camUp)) * speed;
     if(glfwGetKey(window, GLFW_KEY_D)==GLFW_PRESS) camPos += glm::normalize(glm::cross(camFront, camUp)) * speed;
+    if (glfwGetKey(window, GLFW_KEY_G) == GLFW_PRESS) {
+        if (!areAlignedOrSmth(sunPos, earthPos, moonPos)) {
+            currentEarthSpeed += 0.1f * deltaTime;
+            currentMoonSpeed += 0.1f * deltaTime;
+
+        }
+        else if(!moonInfront && areAlignedOrSmth(sunPos, earthPos, moonPos)) {
+            currentEarthSpeed = 0.0f;
+            currentMoonSpeed = 0.0f;
+        }
+    }
+    else if (glfwGetKey(window, GLFW_KEY_J) == GLFW_PRESS) {
+		currentEarthSpeed = earthOrbitSpeed;    
+		currentMoonSpeed = moonOrbitSpeed;
+        }
+    
+if (glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS) {
+    if (!areAlignedOrSmth(sunPos, earthPos, moonPos)) {
+        currentEarthSpeed += 0.1f * deltaTime;
+        currentMoonSpeed += 0.1f * deltaTime;
+
+    }
+    else if (moonInfront&&areAlignedOrSmth(sunPos, earthPos, moonPos)) {
+        currentEarthSpeed = 0.0f;
+        currentMoonSpeed = 0.0f;
+    }
 }
+  //else if (glfwGetKey(window, GLFW_KEY_G) == GLFW_RELEASE) {
+  //    currentEarthSpeed = earthOrbitSpeed;    
+  //    currentMoonSpeed = moonOrbitSpeed;
+  //    }
+}
+bool areAlignedOrSmth(glm::vec3 sunPos, glm::vec3 earthPos, glm::vec3 moonPos)
+{
+    glm::vec3 sunToEarth = sunPos - earthPos;
+    glm::vec3 EarthToMoon = moonPos - earthPos;
+	glm::vec3 sunToMoon = sunPos - moonPos;
+    glm::vec3 cross = glm::cross(sunToEarth, EarthToMoon);
+    if (glm::length(sunToEarth) - glm::length(sunToMoon) < glm::length(sunToEarth)) { moonInfront = true; }
+	else { moonInfront = false; }
+    return glm::length(cross) < 0.01f;
+}
+
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos){
     if(firstMouse){ lastX=(float)xpos; lastY=(float)ypos; firstMouse=false; }

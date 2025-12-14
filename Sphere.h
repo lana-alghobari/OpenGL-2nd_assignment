@@ -38,8 +38,8 @@ private:
                 vertices.push_back(n.z);
 
                 // tex coords
-                vertices.push_back(1.0f - (float)j / sectorCount);
-                vertices.push_back((float)i / stackCount);
+                vertices.push_back((float)j/sectorCount);
+                vertices.push_back((float)i/stackCount);
             }
         }
 
