@@ -10,24 +10,20 @@
 
 class Model {
 public:
-    // Model data
     std::vector<Texture> textures_loaded;
     std::vector<Mesh> meshes;
     std::string directory;
 
-    // Constructor, expects a filepath to a 3D model.
     Model(std::string const &path) {
         loadModel(path);
     }
 
-    // Draws the model, and thus all its meshes
     void Draw(Shader &shader) {
         for(unsigned int i = 0; i < meshes.size(); i++)
             meshes[i].Draw(shader);
     }
 
 private:
-    // Loads a model with supported ASSIMP extensions from file and stores the resulting meshes in the meshes vector.
     void loadModel(std::string const &path) {
         Assimp::Importer importer;
         const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenNormals);
@@ -40,7 +36,6 @@ private:
         processNode(scene->mRootNode, scene);
     }
 
-    // Processes a node in a recursive fashion.
     void processNode(aiNode *node, const aiScene *scene) {
         for(unsigned int i = 0; i < node->mNumMeshes; i++) {
             aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
@@ -56,7 +51,6 @@ private:
         std::vector<unsigned int> indices;
         std::vector<Texture> textures;
 
-        // Process vertices
         for(unsigned int i = 0; i < mesh->mNumVertices; i++) {
             Vertex vertex;
             vertex.Position = {mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z};
@@ -70,13 +64,11 @@ private:
             }
             vertices.push_back(vertex);
         }
-        // Process indices
         for(unsigned int i = 0; i < mesh->mNumFaces; i++) {
             aiFace face = mesh->mFaces[i];
             for(unsigned int j = 0; j < face.mNumIndices; j++)
                 indices.push_back(face.mIndices[j]);
         }
-        // Process material
         if(mesh->mMaterialIndex >= 0) {
             aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
             std::vector<Texture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
@@ -86,7 +78,6 @@ private:
         return Mesh(vertices, indices, textures);
     }
 
-    // Utility function to load textures
     unsigned int TextureFromFile(const char *path, const std::string &directory) {
         std::string filename = std::string(path);
         filename = directory + '/' + filename;
