@@ -37,6 +37,7 @@ void processInput(GLFWwindow *window);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 bool areAlignedOrSmth(glm::vec3 sunPos, glm::vec3 earthPos, glm::vec3 moonPos);
+bool isMoonInFront(glm::vec3 sunPos, glm::vec3 earthPos, glm::vec3 moonPos);
 
 int main() {
     if (!glfwInit()) return -1;
@@ -162,7 +163,7 @@ void processInput(GLFWwindow *window){
             currentMoonSpeed += 0.1f * deltaTime;
 
         }
-        else if(!moonInfront && areAlignedOrSmth(sunPos, earthPos, moonPos)) {
+        else if (isMoonInFront(sunPos, earthPos, moonPos)) {
             currentEarthSpeed = 0.0f;
             currentMoonSpeed = 0.0f;
         }
@@ -178,7 +179,7 @@ if (glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS) {
         currentMoonSpeed += 0.1f * deltaTime;
 
     }
-    else if (moonInfront&&areAlignedOrSmth(sunPos, earthPos, moonPos)) {
+    else if ( !isMoonInFront(sunPos, earthPos, moonPos)) {
         currentEarthSpeed = 0.0f;
         currentMoonSpeed = 0.0f;
     }
@@ -194,9 +195,20 @@ bool areAlignedOrSmth(glm::vec3 sunPos, glm::vec3 earthPos, glm::vec3 moonPos)
     glm::vec3 EarthToMoon = moonPos - earthPos;
 	glm::vec3 sunToMoon = sunPos - moonPos;
     glm::vec3 cross = glm::cross(sunToEarth, EarthToMoon);
-    if (glm::length(sunToEarth) - glm::length(sunToMoon) < glm::length(sunToEarth)) { moonInfront = true; }
-	else { moonInfront = false; }
     return glm::length(cross) < 0.01f;
+}
+
+bool isMoonInFront(glm::vec3 sunPos, glm::vec3 earthPos, glm::vec3 moonPos)
+{
+    double sunToEarth = glm::length(sunPos - earthPos);
+    double sunToMoon = glm::length(sunPos - moonPos);
+    
+    if (sunToMoon > sunToEarth)
+        return false;
+    else
+        return true;
+
+
 }
 
 
