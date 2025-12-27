@@ -1,10 +1,10 @@
 #pragma once
 #include <GL/glew.h>
 #include <glm.hpp>
+#include "stb_image.h"
 #include <vector>
 #include <iostream>
 #include "Shader.h"
-#include "stb_image.h"
 
 class Sphere {
 private:
@@ -85,15 +85,24 @@ private:
 public:
     Sphere(float radius=1.0f, unsigned int sectorCount=36, unsigned int stackCount=18, const char* texPath=nullptr) {
         generateSphere(radius, sectorCount, stackCount);
+        std::cout<<3;
 
         if(texPath){
+            std::cout<<4;
+
             glGenTextures(1, &textureID);
             glBindTexture(GL_TEXTURE_2D, textureID);
+            std::cout<<5;
 
             int width, height, nrChannels;
             stbi_set_flip_vertically_on_load(true);
+            std::cout<<6;
+
             unsigned char *data = stbi_load(texPath, &width, &height, &nrChannels, 0);
+            std::cout<<7;
+
             if(data){
+                std::cout<<3;
                 //GLenum format = nrChannels == 3 ? GL_RGB : GL_RGBA;
                 GLenum format;
                 if (nrChannels == 1) format = GL_RED;
@@ -111,7 +120,8 @@ public:
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-            } else {
+            }
+            else {
                 std::cout << "Failed to load texture: " << texPath << std::endl;
             }
             stbi_image_free(data);

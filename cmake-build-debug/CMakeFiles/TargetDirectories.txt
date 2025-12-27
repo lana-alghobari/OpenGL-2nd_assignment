@@ -1,3 +1,0 @@
-C:/Users/victus/Desktop/Yeppie/cmake-build-debug/CMakeFiles/SolarSystem.dir
-C:/Users/victus/Desktop/Yeppie/cmake-build-debug/CMakeFiles/edit_cache.dir
-C:/Users/victus/Desktop/Yeppie/cmake-build-debug/CMakeFiles/rebuild_cache.dir

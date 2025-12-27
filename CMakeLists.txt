@@ -22,7 +22,9 @@ include_directories(${imgui})
 
 
 
-add_executable(SolarSystem main.cpp)
+add_executable(SolarSystem main.cpp
+             stb_image.cpp
+)
 
 
 target_link_libraries(SolarSystem glfw3 glew32 opengl32 libassimp)

@@ -1,12 +1,9 @@
-//#define STB_IMAGE_IMPLEMENTATION
-
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include "stb_image.h"
 #include <iostream>
 #include <glm.hpp>
 #include <gtc/matrix_transform.hpp>
-#include <gtc/type_ptr.hpp>
-#include "stb_image.h"
 #include <array>
 
 #include "Shader.h"
@@ -40,28 +37,43 @@ bool areAlignedOrSmth(glm::vec3 sunPos, glm::vec3 earthPos, glm::vec3 moonPos);
 bool isMoonInFront(glm::vec3 sunPos, glm::vec3 earthPos, glm::vec3 moonPos);
 
 int main() {
+    std::cout << 1 ;
+
     if (!glfwInit()) return -1;
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    std::cout << 1 ;
 
     GLFWwindow* window = glfwCreateWindow(800, 600, "Sphere Light Test", nullptr, nullptr);
     if (!window) { glfwTerminate(); return -1; }
     glfwMakeContextCurrent(window);
+    std::cout << 1 ;
 
     glfwSetCursorPosCallback(window, mouse_callback);
     glfwSetScrollCallback(window, scroll_callback);
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    std::cout << 1 ;
 
-    if (glewInit() != GLEW_OK) { std::cout << "GLEW FAILED\n"; return -1; }
+    glewExperimental = GL_TRUE;
+    if (glewInit() != GLEW_OK) {
+        std::cout << "GLEW init failed\n";
+    }
+    std::cout << 1 ;
 
     glEnable(GL_DEPTH_TEST);
+    std::cout << 1 ;
 
-    Shader lightingShader("../HW-model.fs"); 
+    Shader lightingShader("../HW-model.fs");
 
     Sphere sun(0.5f, 36, 18 ,"../textures/Sun.jpg");
+    std::cout << 2 ;
+
     Sphere earth(0.3f, 36, 18, "../textures/Earth.jpg");
+    std::cout << 2 ;
+
     Sphere moon(0.15, 36, 18, "../textures/Moon.jpg");
+    std::cout << 2 ;
 
 
     glDisable(GL_CULL_FACE);
